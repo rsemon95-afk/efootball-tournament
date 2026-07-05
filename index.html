@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Tournament Engine 2026</title>
+<title>🏆 Efootball BD Tournament PRO</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -15,46 +15,33 @@ table{width:100%;border-collapse:collapse}
 th,td{border:1px solid #334155;padding:8px;text-align:center}
 th{background:#0ea5e9}
 .badge{background:#22c55e;padding:3px 8px;border-radius:10px}
+.small{font-size:12px;color:#94a3b8}
 </style>
 </head>
 
 <body>
 
-<header>🏆 Efootball BD Tournament Engine 2026</header>
+<header>🏆 Efootball BD Tournament PRO SYSTEM</header>
 
 <div class="container">
 
-<!-- ADMIN -->
+<!-- LOGIN -->
 <div class="card">
-<h3>🔐 Admin Panel</h3>
-<input type="password" id="pass" placeholder="Password">
+<h3>🔐 Admin Login</h3>
+<input type="password" id="pass">
 <button onclick="login()">Login</button>
 </div>
 
+<!-- ADMIN -->
 <div class="card" id="admin" style="display:none">
 <h3>⚽ Add Match Result</h3>
 
-<input id="team1" placeholder="Team 1">
-<input id="team2" placeholder="Team 2">
-<input id="score1" type="number" placeholder="Score 1">
-<input id="score2" type="number" placeholder="Score 2">
+<input id="t1" placeholder="Team 1">
+<input id="t2" placeholder="Team 2">
+<input id="s1" type="number" placeholder="Score 1">
+<input id="s2" type="number" placeholder="Score 2">
 
 <button onclick="addMatch()">Save Match</button>
-</div>
-
-<!-- GROUP TABLE -->
-<div class="card">
-<h3>📊 Points Table</h3>
-<table id="table">
-<tr>
-<th>Team</th>
-<th>P</th>
-<th>W</th>
-<th>D</th>
-<th>L</th>
-<th>Pts</th>
-</tr>
-</table>
 </div>
 
 <!-- GROUPS -->
@@ -63,10 +50,24 @@ th{background:#0ea5e9}
 <p id="groups"></p>
 </div>
 
+<!-- TABLE -->
+<div class="card">
+<h3>📊 Live Table</h3>
+<table id="table">
+<tr><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>Pts</th></tr>
+</table>
+</div>
+
 <!-- QUALIFIED -->
 <div class="card">
 <h3>🏆 Qualified Teams</h3>
 <p id="qualify"></p>
+</div>
+
+<!-- KNOCKOUT -->
+<div class="card">
+<h3>🌳 Knockout Stage</h3>
+<p id="knockout"></p>
 </div>
 
 </div>
@@ -75,14 +76,13 @@ th{background:#0ea5e9}
 
 let password="1234";
 
-let teams = [
+let teams=[
 "Team1","Team2","Team3","Team4",
 "Team5","Team6","Team7","Team8",
 "Team9","Team10","Team11","Team12"
 ];
 
 let stats={};
-
 teams.forEach(t=>{
 stats[t]={p:0,w:0,d:0,l:0,pts:0};
 });
@@ -94,13 +94,13 @@ document.getElementById("admin").style.display="block";
 }
 }
 
-// ⚽ MATCH RESULT
+// ⚽ MATCH SYSTEM
 function addMatch(){
 
-let t1=document.getElementById("team1").value;
-let t2=document.getElementById("team2").value;
-let s1=+document.getElementById("score1").value;
-let s2=+document.getElementById("score2").value;
+let t1=document.getElementById("t1").value;
+let t2=document.getElementById("t2").value;
+let s1=+document.getElementById("s1").value;
+let s2=+document.getElementById("s2").value;
 
 stats[t1].p++;
 stats[t2].p++;
@@ -115,34 +115,35 @@ else{
 stats[t1].d++; stats[t2].d++;
 }
 
-stats[t1].pts = stats[t1].w*3 + stats[t1].d;
-stats[t2].pts = stats[t2].w*3 + stats[t2].d;
-
+updatePoints();
 render();
+}
+
+// 📊 POINT CALC
+function updatePoints(){
+Object.keys(stats).forEach(t=>{
+stats[t].pts = stats[t].w*3 + stats[t].d;
+});
 }
 
 // 📊 TABLE
 function render(){
 
 let table=document.getElementById("table");
-
-table.innerHTML=`
-<tr><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>Pts</th></tr>
-`;
+table.innerHTML=`<tr><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>Pts</th></tr>`;
 
 let sorted=Object.entries(stats).sort((a,b)=>b[1].pts-a[1].pts);
 
-sorted.forEach(([team,s])=>{
+sorted.forEach(([t,s])=>{
 table.innerHTML+=`
 <tr>
-<td>${team}</td>
+<td>${t}</td>
 <td>${s.p}</td>
 <td>${s.w}</td>
 <td>${s.d}</td>
 <td>${s.l}</td>
 <td><span class="badge">${s.pts}</span></td>
-</tr>
-`;
+</tr>`;
 });
 
 // 👥 GROUPS
@@ -156,10 +157,23 @@ document.getElementById("groups").innerHTML=
 "Group C: "+gC.join(", ");
 
 // 🏆 QUALIFIED TOP 2 EACH GROUP
-let top2 = sorted.slice(0,6).map(x=>x[0]);
+let sortedTeams=Object.entries(stats).sort((a,b)=>b[1].pts-a[1].pts);
+
+let qualified=[
+sortedTeams[0][0],sortedTeams[1][0],
+sortedTeams[2][0],sortedTeams[3][0],
+sortedTeams[4][0],sortedTeams[5][0]
+];
 
 document.getElementById("qualify").innerHTML=
-top2.map(t=>`<span class="badge">${t}</span>`).join(" ");
+qualified.map(t=>`<span class="badge">${t}</span>`).join(" ");
+
+// 🌳 KNOCKOUT
+document.getElementById("knockout").innerHTML=`
+🥇 QF1: ${qualified[0]} vs ${qualified[5]}<br>
+🥈 QF2: ${qualified[1]} vs ${qualified[4]}<br>
+🥉 QF3: ${qualified[2]} vs ${qualified[3]}<br>
+`;
 
 }
 
