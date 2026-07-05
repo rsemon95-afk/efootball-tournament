@@ -1,1 +1,75 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+<title>Efootball BD Club Tournament 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{font-family:Arial;background:#0f172a;color:white;margin:0}
+header{padding:15px;text-align:center;background:#1e293b;font-weight:bold}
+.container{padding:10px}
+.card{background:#1e293b;padding:10px;margin:10px 0;border-radius:10px}
+input,button{width:100%;padding:10px;margin:5px 0;border-radius:5px;border:none}
+button{background:#22c55e;color:white;font-weight:bold}
+table{width:100%;border-collapse:collapse}
+th,td{border:1px solid #334155;padding:8px;text-align:center}
+th{background:#0ea5e9}
+</style>
+</head>
+
+<body>
+
+<header>🏆 Efootball BD Club Tournament 2026</header>
+
+<div class="container">
+
+<div class="card">
+<h3>🔐 Admin Login</h3>
+<input type="password" id="pass" placeholder="Password">
+<button onclick="login()">Login</button>
+</div>
+
+<div class="card" id="admin" style="display:none">
+<h3>⚽ Update Score</h3>
+<input id="team" placeholder="Team">
+<input id="win" type="number" placeholder="Win">
+<input id="draw" type="number" placeholder="Draw">
+<input id="loss" type="number" placeholder="Loss">
+<button onclick="save()">Save</button>
+</div>
+
+<div class="card">
+<h3>📊 Points Table</h3>
+<table id="table">
+<tr><th>Team</th><th>W</th><th>D</th><th>L</th><th>Pts</th></tr>
+</table>
+</div>
+
+</div>
+
+<script>
+let password = "1234";
+
+function login(){
+let p=document.getElementById("pass").value;
+if(p==password){
+document.getElementById("admin").style.display="block";
+alert("Logged in");
+}else alert("Wrong password");
+}
+
+function save(){
+let t=document.getElementById("team").value;
+let w=+document.getElementById("win").value;
+let d=+document.getElementById("draw").value;
+let l=+document.getElementById("loss").value;
+
+let pts=(w*3)+d;
+
+let row=document.getElementById("table").insertRow();
+row.innerHTML=`<td>${t}</td><td>${w}</td><td>${d}</td><td>${l}</td><td>${pts}</td>`;
+}
+</script>
+
+</body>
+</html>
